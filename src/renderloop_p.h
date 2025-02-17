@@ -42,6 +42,7 @@ public:
     bool pendingRepaint = false;
     RenderLoop::VrrPolicy vrrPolicy = RenderLoop::VrrPolicy::Never;
     Item *fullscreenItem = nullptr;
+    std::chrono::nanoseconds requestedWaitInterval = std::chrono::nanoseconds::zero();
 
     enum class SyncMode {
         Fixed,
