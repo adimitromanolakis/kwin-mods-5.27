@@ -100,6 +100,7 @@ void RenderLoopPrivate::scheduleRepaint()
     }
 
     const std::chrono::nanoseconds waitInterval = nextRenderTimestamp - currentTime;
+    requestedWaitInterval = waitInterval;
     compositeTimer.setTimerType(Qt::PreciseTimer);
     compositeTimer.start(std::chrono::duration_cast<std::chrono::milliseconds>(waitInterval));
 }
@@ -151,6 +152,19 @@ void RenderLoopPrivate::notifyFrameCompleted(std::chrono::nanoseconds timestamp)
 
 void RenderLoopPrivate::dispatch()
 {
+    // Check timer accuracy
+    if (requestedWaitInterval > std::chrono::nanoseconds::zero()) {
+        const auto currentTime = std::chrono::steady_clock::now().time_since_epoch();
+        const auto actualInterval = currentTime - (lastPresentationTimestamp + requestedWaitInterval);
+        
+        // Print debug if difference is > 1ms
+        if (std::abs(actualInterval.count()) > 1000000) {
+            qDebug() << "Timer missed target by" << (actualInterval.count() / 1000000.0) << "ms"
+                    << "(requested:" << (requestedWaitInterval.count() / 1000000.0) << "ms)";
+        }
+        requestedWaitInterval = std::chrono::nanoseconds::zero();
+    }
+
     // On X11, we want to ignore repaints that are scheduled by windows right before
     // the Compositor starts repainting.
     pendingRepaint = true;
