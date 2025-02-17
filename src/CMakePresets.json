@@ -1,0 +1,29 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "apo2",
+            "displayName": "Custom configure preset",
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_EXPORT_NO_PACKAGE_REGISTRY": "ON",
+                "CMAKE_FIND_USE_PACKAGE_REGISTRY": "OFF",
+                "CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY": "ON",
+                "KDE_INSTALL_USE_QT_SYS_PATHS" : "ON",
+                "CMAKE_SKIP_INSTALL_ALL_DEPENDENCY" : "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "apo2",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "apo2"
+        }
+    ]
+}
